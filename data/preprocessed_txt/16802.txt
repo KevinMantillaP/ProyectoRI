@@ -1,0 +1,1 @@
+pam transport servic ltptsio net 1st qtr shr 16 cts 10 cts net 808850 297266 rev 139 mln 7588280 avg shrs 4926566 3123411
