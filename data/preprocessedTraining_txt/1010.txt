@@ -1,0 +1,1 @@
+accept insur hold ltacpt year oper shr profit dlrs loss dlrs oper net profit loss rev mln mln avg shrs note net exclud realiz invest gain dlrs dlrs net exclud dlr tax credit
