@@ -1,1 +1,0 @@
-bic corp ltbic set quarter qtli div 15 cts 15 cts prior pay april 30 record april 14

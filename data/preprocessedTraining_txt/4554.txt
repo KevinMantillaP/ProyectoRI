@@ -1,1 +1,0 @@
-standard logic ltstdl 1st qtr loss qtr end jan 30 oper shr loss 45 cts profit 44 cts oper net loss 225815 profit 219593 rev 175247 827748 note oper net 1987 exclud loss discontinu oper 125047 loss 34055 prior qtr exclud tax carryforward 150000 prior qtr

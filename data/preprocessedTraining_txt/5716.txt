@@ -1,1 +1,0 @@
-ltgener leasehold year net shr 30 cts 53 cts net 868000 728000 rev 7300000 6500000 avg shrs 3000000 750000

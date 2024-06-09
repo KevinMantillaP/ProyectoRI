@@ -1,1 +1,0 @@
-export inspect thous bushel soybean 13417 wheat 12003 corn 27623 export inspect thous bushel soybean 13417 wheat 12003 corn 27623
