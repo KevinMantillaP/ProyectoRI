@@ -1,1 +1,0 @@
-lvi group ltlvi qtr oper net oper shr profit cts loss cts oper net profit loss rev mln mln avg shrs mln mln year oper shr profit cts loss cts oper net profit loss rev mln mln avg shrs mln note qtr year oper net exclud gain dlrs dlrs carryforward loss dlrs dlrs earli extinguish debt qtr year oper net exclud loss dlrs cts share loss dlrs cts share discontinu oper
