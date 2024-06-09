@@ -1,0 +1,1 @@
+network video ltnvid 3rd qtr feb 28 net shr ct cts net 50745 161019 rev 478700 1048543 avg shrs 4350000 3217500 mths shr cts 12 cts net 169275 390179 rev 1478066 2658692 avg shrs 4350000 3217500

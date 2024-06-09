@@ -1,0 +1,1 @@
+grain ship wait orlean ten grain ship load 18 wait load orlean elev trade sourc elev load wait continent grain westwego 1 3 mississippi river myrtl grove 2 0 adm growmark 1 4 bung grain destrehan 1 0 elev load wait st charl destrehan 1 3 reserv elev corp 0 1 peavey st elmo 1 2 cargil grain terr haut 1 4 cargil grain port allen 1 0 zennoh 1 1

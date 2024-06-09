@@ -1,0 +1,1 @@
+mdc hold ltmdc set quarter qtli div 10 cts 10 cts prior pay march 31 record march 16
