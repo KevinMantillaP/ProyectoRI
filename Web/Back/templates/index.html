@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Recuperación de Información</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">  <!-- Corrección en la referencia del archivo CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>Sistema Recuperación de <br> Reuters-21578</h1>
-        <div class="search-bar">
-            <input type="text" id="query" placeholder="Ingrese su consulta...">
-            <button onclick="search()">Buscar</button>
-        </div>
-        <div class="results" id="results"></div>
-    </div>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>  <!-- Corrección en la referencia del archivo JavaScript -->
+    <h1>Search Engine</h1>
+    <form id="search-form">
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="results"></div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
