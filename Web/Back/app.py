@@ -6,14 +6,14 @@ from flask import Flask, request, jsonify, render_template
 from nltk.stem import SnowballStemmer
 import nltk
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity 
 
 # Inicialización de Flask
 app = Flask(__name__, static_url_path='/static')
 
 # Path de los datos
-data_path = r'D:\U\7. Septimo\RI\ProyectoRI\data\training_txt'
-stopwords_path = r'D:\U\7. Septimo\RI\ProyectoRI\data\stopwords.txt'
+data_path = r'C:\Users\kevin\OneDrive\Documentos\GitHub\ProyectoRI\data\training_txt'
+stopwords_path = r'C:\Users\kevin\OneDrive\Documentos\GitHub\ProyectoRI\data\stopwords.txt'
 
 # Cargar documentos
 documents = []
@@ -62,29 +62,43 @@ def build_inverted_index_from_bow(X, feature_names):
         inverted_index[term] = term_docs
     return inverted_index
 
-# Obtener los nombres de las características del vectorizador BoW
+# Construir índice invertido para TF-IDF
+def build_inverted_index_from_tfidf(X, feature_names):
+    inverted_index = {}
+    for doc_idx, doc in enumerate(X):
+        doc = doc.toarray().flatten()
+        relevant_terms = set(np.where(doc > 0)[0])
+        for term_idx in relevant_terms:
+            term = feature_names[term_idx]
+            if term not in inverted_index:
+                inverted_index[term] = set()
+            inverted_index[term].add(doc_idx)
+    return inverted_index
+
+# Obtener los nombres de las características del vectorizador BoW y TF-IDF
 feature_names_bow = vectorizer_bow.get_feature_names_out()
+feature_names_tfidf = vectorizer_tfidf.get_feature_names_out()
 
-# Construir el índice invertido para BoW
+# Construir el índice invertido para BoW y TF-IDF
 inverted_index_bow = build_inverted_index_from_bow(X_bow, feature_names_bow)
+inverted_index_tfidf = build_inverted_index_from_tfidf(X_tfidf, feature_names_tfidf)
 
-# Función para encontrar documentos relevantes
-def relevant_documents_for_query(query_terms, index):
+# Función para calcular similitud de Jaccard entre dos conjuntos
+def jaccard_similarity(set1, set2):
+    intersection = len(set1 & set2)
+    union = len(set1 | set2)
+    return intersection / union if union > 0 else 0
+
+# Función para encontrar documentos relevantes usando Jaccard similarity
+def relevant_documents_for_query_jaccard(query_terms, index):
     relevant_docs = set()
+    query_terms = set(query_terms)
     for term in query_terms:
         if term in index:
             relevant_docs.update(index[term])
     return relevant_docs
 
-# Función para calcular precisión y recall
-def precision_recall(ranked_documents, relevant_docs):
-    retrieved_docs = set(ranked_documents)
-    TP = len(retrieved_docs & relevant_docs)
-    FP = len(retrieved_docs - relevant_docs)
-    FN = len(relevant_docs - retrieved_docs)
-    precision = TP / (TP + FP) if (TP + FP) > 0 else 0
-    recall = TP / (TP + FN) if (TP + FN) > 0 else 0
-    return precision, recall
+
 
 @app.route('/')
 def index():
@@ -94,22 +108,30 @@ def index():
 def search():
     query = request.args.get('q', '')
     query_processed = preprocess_text(query)
-    query_vector_bow = vectorizer_bow.transform([query_processed])
+
+    # Calcular similitud con Jaccard para BoW
+    query_terms = set(query_processed.split())
+    relevant_docs_bow = relevant_documents_for_query_jaccard(query_terms, inverted_index_bow)
+
+    # Calcular similitud de Jaccard y ordenar documentos relevantes para BoW
+    similarities_bow = []
+    for idx, content in enumerate(contents):
+        doc_terms = set(content.split())
+        similarity = jaccard_similarity(query_terms, doc_terms)
+        similarities_bow.append((idx, similarity))
+
+    similarities_bow.sort(key=lambda x: x[1], reverse=True)
+    ranked_documents_bow = [filenames[idx] for idx, _ in similarities_bow[:10]]
+
+    # Calcular similitud de coseno y ordenar documentos relevantes para TF-IDF
     query_vector_tfidf = vectorizer_tfidf.transform([query_processed])
-
-    similarity_scores_bow = cosine_similarity(query_vector_bow, X_bow)
-    similarity_scores_tfidf = cosine_similarity(query_vector_tfidf, X_tfidf)
-
-    ranked_documents_bow = np.argsort(similarity_scores_bow[0])[::-1]
-    ranked_documents_tfidf = np.argsort(similarity_scores_tfidf[0])[::-1]
-
-    # Convertir índices a nombres de archivos
-    ranked_files_bow = [filenames[idx] for idx in ranked_documents_bow[:10]]
-    ranked_files_tfidf = [filenames[idx] for idx in ranked_documents_tfidf[:10]]
+    similarities_tfidf = cosine_similarity(query_vector_tfidf, X_tfidf).flatten()
+    similarities_tfidf_indices = np.argsort(similarities_tfidf)[::-1]
+    ranked_documents_tfidf = [filenames[idx] for idx in similarities_tfidf_indices[:10]]
 
     results = {
-        "BoW": ranked_files_bow,
-        "TF-IDF": ranked_files_tfidf
+        "BoW": ranked_documents_bow,
+        "TF-IDF": ranked_documents_tfidf,
     }
 
     # Imprimir la respuesta para depuración
@@ -117,5 +139,5 @@ def search():
 
     return jsonify(results)
 
-if __name__ == '__main__':
+if __name__ == '_main_':
     app.run(debug=True)
