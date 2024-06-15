@@ -7,6 +7,7 @@ from nltk.stem import SnowballStemmer
 import nltk
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity 
+from nltk.metrics.distance import jaccard_distance
 
 # Inicialización de Flask
 app = Flask(__name__, static_url_path='/static')
@@ -83,22 +84,13 @@ feature_names_tfidf = vectorizer_tfidf.get_feature_names_out()
 inverted_index_bow = build_inverted_index_from_bow(X_bow, feature_names_bow)
 inverted_index_tfidf = build_inverted_index_from_tfidf(X_tfidf, feature_names_tfidf)
 
-# Función para calcular similitud de Jaccard entre dos conjuntos
-def jaccard_similarity(set1, set2):
-    intersection = len(set1 & set2)
-    union = len(set1 | set2)
-    return intersection / union if union > 0 else 0
-
-# Función para encontrar documentos relevantes usando Jaccard similarity
+# Función para encontrar documentos relevantes usando Jaccard distance
 def relevant_documents_for_query_jaccard(query_terms, index):
     relevant_docs = set()
-    query_terms = set(query_terms)
     for term in query_terms:
         if term in index:
             relevant_docs.update(index[term])
     return relevant_docs
-
-
 
 @app.route('/')
 def index():
@@ -117,12 +109,11 @@ def search():
     similarities_bow = []
     for idx, content in enumerate(contents):
         doc_terms = set(content.split())
-        similarity = jaccard_similarity(query_terms, doc_terms)
+        similarity = 1 - jaccard_distance(query_terms, doc_terms)
         similarities_bow.append((idx, similarity))
 
     similarities_bow.sort(key=lambda x: x[1], reverse=True)
     ranked_documents_bow = [filenames[idx] for idx, _ in similarities_bow[:10]]
-
     # Calcular similitud de coseno y ordenar documentos relevantes para TF-IDF
     query_vector_tfidf = vectorizer_tfidf.transform([query_processed])
     similarities_tfidf = cosine_similarity(query_vector_tfidf, X_tfidf).flatten()
@@ -139,5 +130,5 @@ def search():
 
     return jsonify(results)
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     app.run(debug=True)

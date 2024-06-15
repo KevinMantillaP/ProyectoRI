@@ -3,16 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Sistema Recuperacion de informacion</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Search Engine</h1>
-    <form id="search-form">
-        <input type="text" id="query" name="query" required>
-        <button type="submit">Search</button>
-    </form>
-    <div id="results"></div>
+    <div class="container">
+        <h1>Sistema de Recuperacion de informacion Reuters 21578 </h1>
+        <form id="search-form">
+            <input type="text" id="query" name="query" required>
+            <button type="submit">Search</button>
+        </form>
+        <div id="results">
+            <!-- Aquí se mostrarán los resultados -->
+        </div>
+    </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
+

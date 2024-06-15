@@ -1,15 +1,22 @@
 document.getElementById('search-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const query = document.getElementById('query').value;
-
-    fetch(`/search?q=${query}`)
+    var query = document.getElementById('query').value;
+    fetch('/search?q=' + encodeURIComponent(query))
         .then(response => response.json())
-        .then(results => {
-            console.log(results); // Añade esta línea para depuración
-            displayResults(results);
+        .then(data => {
+            var resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Results:</h2>';
+            for (var key in data) {
+                resultsDiv.innerHTML += '<h3>' + key + '</h3><ul>';
+                data[key].forEach(function(item) {
+                    resultsDiv.innerHTML += '<li>' + item + '</li>';
+                });
+                resultsDiv.innerHTML += '</ul>';
+            }
         })
         .catch(error => console.error('Error:', error));
 });
+
 
 function displayResults(results) {
     const resultsContainer = document.getElementById('results');
